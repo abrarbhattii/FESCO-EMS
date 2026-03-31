@@ -1,0 +1,335 @@
+html,
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  height: 100%;
+}
+
+/* Layout */
+.app {
+  display: flex;
+  height: calc(100vh - 50px);
+}
+
+.sidebar {
+  display: grid;
+  grid-template-columns: 56px 0;
+  width: 56px;
+  min-width: 56px;
+  max-width: 360px;
+  height: 100%;
+  border-right: 1px solid #ddd;
+  background: #ffffff;
+  transition:
+    width 0.2s ease,
+    grid-template-columns 0.2s ease;
+}
+
+.sidebar.open {
+  grid-template-columns: 56px 1fr;
+  width: 320px;
+  min-width: 300px;
+}
+.content-area {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: #f5f5f5;
+}
+
+#viewDiv {
+  height: 100%;
+  width: 100%;
+}
+.navbar {
+  height: 50px;
+  background-color: #4aa3df; /* Reference blue */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  color: white;
+  font-weight: 600;
+  font-size: 1.5rem;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}
+.h4 {
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-weight: 900;
+  font-size: 1.5rem;
+}
+.btn.dropdown-toggle {
+  color: black;
+  margin-left: 15px;
+  font-size: 12px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+.dropdown-menu {
+  right: 0;
+  left: auto;
+}
+.dropdown-item {
+  font-size: 14px;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  display: block;
+}
+
+/* Button styles */
+.btn {
+  margin: 2px 0;
+}
+.esri-zoom {
+  position: fixed;
+  top: 20px;
+  right: 10px;
+  z-index: 10;
+}
+.esri-widget--button {
+  background-color: #58B1FC;
+  outline:white solid 1px;
+}
+
+.iconbar {
+  width: 56px;
+  background: #1f8acb;
+  padding: 10px 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.icon-btn {
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: 8px;
+  background: transparent;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.sidebar-content {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+.basemap-panel {
+  display: none;
+  border-bottom: 1px solid #e6e6e6;
+  padding: 8px;
+  background: #ffffff;
+  position: relative;
+  max-height: 100%;
+  overflow: auto;
+  z-index: 1;
+}
+
+.basemap-panel.open {
+  display: block;
+}
+
+.print-panel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.print-panel__title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #1f77c7;
+  margin-bottom: 4px;
+}
+
+.print-panel__label {
+  font-size: 12px;
+  color: #4c4c4c;
+}
+
+.print-panel__input,
+.print-panel__select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #d4d4d4;
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+.print-panel__button {
+  margin-top: 4px;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: #1f77c7;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.print-panel__button:hover {
+  background: #1763a5;
+}
+
+.print-panel__status {
+  min-height: 18px;
+  font-size: 12px;
+  color: #666666;
+}
+
+.icon {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #ffffff;
+  border-radius: 6px;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.icon::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  background: #ffffff;
+  transform: translate(-50%, -50%);
+}
+
+.tree-panel {
+  background: #ffffff;
+  border-right: 1px solid #ddd;
+  padding: 12px 10px 16px 12px;
+  box-sizing: border-box;
+  min-width: 0;
+  width: 100%;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.tree-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f77c7;
+  padding: 6px 4px 10px 4px;
+  border-bottom: 1px solid #e6e6e6;
+  margin-bottom: 8px;
+}
+
+.tree-header input {
+  width: 14px;
+  height: 14px;
+}
+
+/* Tree container */
+.tree {
+  list-style: none;
+  padding-left: 14px;
+  position: relative;
+  margin: 0;
+}
+
+/* Lines */
+.tree ul {
+  padding-left: 16px;
+  position: relative;
+}
+
+.tree li {
+  margin: 0;
+  padding: 4px 0;
+  position: relative;
+}
+
+/* Node styling */
+.tree li .node-label  {
+  display: inline-block;
+  padding: 2px 4px;
+  border-radius: 4px;
+  color: #1f77c7;
+  cursor: default;
+}
+
+.tree li .leaf {
+  cursor: default;
+}
+
+.tree li .node-check {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  vertical-align: -2px;
+}
+
+.tree li button.toggle {
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border: 1px solid #7faad0;
+  border-radius: 2px;
+  background: #ffffff;
+  line-height: 12px;
+  padding: 0;
+  font-size: 12px;
+  color: #1f77c7;
+  cursor: pointer;
+}
+
+/* Collapsible children */
+.tree li > ul {
+  display: none;
+}
+
+.tree li.open > ul {
+  display: block;
+}
+
+
+
+
+
+/* tree.js */
+
+
+.tree {
+  list-style: none;
+  padding-left: 10px;
+}
+
+.tree ul {
+  list-style: none;
+  padding-left: 25px;
+}
+
+.node-label {
+  margin-left: 5px;
+}
+
+.toggle-btn {
+  width: 25px;
+  margin-right: 5px;
+  cursor: pointer;
+}

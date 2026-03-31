@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+ 
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Tree Structure</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- ARCGIS CDN -->
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.34/esri/themes/light/main.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <h4>FESCO ENTERPRISE MANAGEMENT SYSTEM</h4>   
+        <div class="navbar-nav">
+          <div class="nav-item dropdown">
+            <button
+              class="btn dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              User Account
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+              <li><hr class="dropdown-divider" /></li>
+              <li><a class="dropdown-item" href="#">Help</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <main class="app">
+
+      <aside class="sidebar" aria-label="Left Sidebar">
+
+        <div class="iconbar" aria-label="Webmaps">
+          
+          <button
+            id="basemapBtn"
+            class="icon-btn"
+            type="button"
+            title="Basemap Gallery"
+            aria-expanded="false"
+          >
+            <span class="esri-icon-basemap" aria-hidden="true"></span>
+          </button>
+          <button
+            id="layersBtn"
+            class="icon-btn"
+            type="button"
+            title="Layers"
+            aria-expanded="false"
+          >
+            <span class="esri-icon-layers" aria-hidden="true"></span>
+          </button>
+        
+        </div>
+        
+        <div class="sidebar-content">
+          <div id="basemapPanel" class="basemap-panel" aria-hidden="true"></div>
+          <div id="layersPanel" class="basemap-panel" aria-hidden="true"></div>
+
+          <div class="tree-panel">
+            <div class="tree-header">
+              <!-- <input id="labels-toggle" type="checkbox" checked /> -->
+              <label for="labels-toggle">Labels (Poles &amp; Sections)</label>
+            </div>
+            <ul id="tree" class="tree">
+              <li class="toggle" id="fesco-li">
+                <button
+                  type="button"
+                  data-endpoint="circles"
+                  data-id=""
+                  class="toggle circles togglebtn"
+                  id="togglebutton"
+                  aria-expanded="false"
+                >
+                  +
+                </button>
+                <!-- <input type="checkbox" name="node-check" id=""> -->
+                <span class="node-label">Fesco Circles</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </aside>
+
+      <section class="content-area">
+        <div id="viewDiv"></div>
+      </section>
+
+    </main>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://js.arcgis.com/4.34/"></script>
+    <script src="./script.js" type="Module"></script>
+  </body>
+
+</html>

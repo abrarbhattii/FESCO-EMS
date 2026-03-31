@@ -1,0 +1,38 @@
+# Node modules
+node_modules/
+
+# Environment variables
+.env
+
+# constants like url etc
+constant.js
+
+# Logs
+*.log
+
+# Build files
+dist/
+build/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Python cache (Anaconda)
+__pycache__/
+*.pyc
+
+# GeoServer temp/cache
+data_dir/temp/
+data_dir/logs/
+
+# Database backups
+*.bak
+*.sql
+
+# Keep important config
+!config/default.json
