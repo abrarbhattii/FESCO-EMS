@@ -46,8 +46,8 @@ app.get("/api/circle-hierarchy/:circle_id", async (req, res) => {
     try {
         const circleId = parseInt(req.params.circle_id);
 
-        console.log("req.params: ", req.params);
-        console.log("circleId: ", circleId);
+        // console.log("req.params: ", req.params);
+        // console.log("circleId: ", circleId);
 
         const pool = await mssql.connect(dbConfig); // pool
 
@@ -58,12 +58,12 @@ app.get("/api/circle-hierarchy/:circle_id", async (req, res) => {
         .execute("sp_GetCircleHierarchyOptimized"); // our SP
 
         // console.log("result: ", result);
-        console.log("result.recordset[0]: ", result.recordset[0]);
+        // console.log("result.recordset[0]: ", result.recordset[0]);
 
         // const jsonData = JSON.parse(result.recordset[0]["circleHierarchy"]);
         // const jsonData = JSON.parse(result.recordset[0]["circleHierarchyFlat"]);
         const jsonData = JSON.parse(result.recordset[0]["circleHierarchyOptimized"]);
-        console.log(jsonData);
+        // console.log(jsonData);
         
         res.json(jsonData); // response
         console.log("result returned..");
@@ -81,8 +81,8 @@ app.get("/api/divisions/:circle_id", async (req, res) => {
     try {
         const circleId = parseInt(req.params.circle_id);
 
-        console.log("req.params: ", req.params);
-        console.log("circleId: ", circleId);
+        // console.log("req.params: ", req.params);
+        // console.log("circleId: ", circleId);
 
         const pool = await mssql.connect(dbConfig); // pool
         
@@ -90,7 +90,7 @@ app.get("/api/divisions/:circle_id", async (req, res) => {
         .input("circle_id", mssql.Int, circleId) // PARAM
         .execute("sp_GetDivisionsByCircle"); // our SP
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         
         res.json(result.recordset); // response
         console.log("result returned..");
@@ -107,8 +107,8 @@ app.get("/api/sub_divisions/:division_id", async (req, res) => {
     try {
         const divisionId = parseInt(req.params.division_id);
 
-        console.log("req.params: ", req.params);
-        console.log("division_id: ", divisionId);
+        // console.log("req.params: ", req.params);
+        // console.log("division_id: ", divisionId);
 
         const pool = await mssql.connect(dbConfig); // pool
         
@@ -116,7 +116,7 @@ app.get("/api/sub_divisions/:division_id", async (req, res) => {
         .input("division_id", mssql.Int, divisionId) // PARAM
         .execute("sp_GetSubDivisionsByDivision"); // our SP
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         
         res.json(result.recordset); // response
         console.log("result returned..");
@@ -134,8 +134,8 @@ app.get("/api/stations/:sub_division_id", async (req, res) => {
     try {
         const subDivisionId = parseInt(req.params.sub_division_id);
 
-        console.log("req.params: ", req.params);
-        console.log("sub_division_id: ", subDivisionId);
+        // console.log("req.params: ", req.params);
+        // console.log("sub_division_id: ", subDivisionId);
 
         const pool = await mssql.connect(dbConfig); // pool
         
@@ -143,7 +143,7 @@ app.get("/api/stations/:sub_division_id", async (req, res) => {
         .input("sub_division_id", mssql.Int, subDivisionId) // PARAM
         .execute("sp_GetStationsBySubDivision"); // our SP
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         
         res.json(result.recordset); // response
         console.log("result returned..");
@@ -161,8 +161,8 @@ app.get("/api/feeders/:station_id", async (req, res) => {
     try {
         const stationId = parseInt(req.params.station_id);
 
-        console.log("req.params: ", req.params);
-        console.log("station_id: ", stationId);
+        // console.log("req.params: ", req.params);
+        // console.log("station_id: ", stationId);
 
         const pool = await mssql.connect(dbConfig); // pool
         
@@ -170,7 +170,7 @@ app.get("/api/feeders/:station_id", async (req, res) => {
         .input("station_id", mssql.Int, stationId) // PARAM
         .execute("sp_GetFeedersByStation"); // our SP
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         
         res.json(result.recordset); // response
         console.log("result returned..");
@@ -188,8 +188,8 @@ app.get("/api/layers/:feeder_id", async (req, res) => {
     try {
         const feederId = parseInt(req.params.feeder_id);
 
-        console.log("req.params: ", req.params);
-        console.log("feeder_id: ", feederId);
+        // console.log("req.params: ", req.params);
+        // console.log("feeder_id: ", feederId);
 
         const pool = await mssql.connect(dbConfig); // pool
         
@@ -197,7 +197,7 @@ app.get("/api/layers/:feeder_id", async (req, res) => {
         .input("feeder_id", mssql.Int, feederId) // PARAM
         .execute("sp_GetLayersByFeeder"); // our SP
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         
         res.json(result.recordset); // response
         console.log("result returned..");
@@ -215,8 +215,8 @@ app.get("/api/HTLayers/:feeder_id", async (req, res) => {
     try {
         const feederId = parseInt(req.params.feeder_id);
 
-        console.log("req.params: ", req.params);
-        console.log("feeder_id: ", feederId);
+        // console.log("req.params: ", req.params);
+        // console.log("feeder_id: ", feederId);
 
         const pool = await mssql.connect(dbConfig); // pool
         
@@ -224,7 +224,7 @@ app.get("/api/HTLayers/:feeder_id", async (req, res) => {
         .input("feeder_id", mssql.Int, feederId) // PARAM
         .execute("sp_GetHTSectionLayersByFeederID"); // our SP
 
-        console.log("result: ", result);
+        // console.log("result: ", result);
         
         res.json(result.recordset); // response
         console.log("result returned..");

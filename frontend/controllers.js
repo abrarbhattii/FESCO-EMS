@@ -38,9 +38,18 @@ function endpointSelection(endpoint) {
 
 function buildTree(data, parentElement) {
 
-    data.forEach(item => {
+    // console.log("data: ", data);
+    // console.log('parentElement: ', parentElement);  
 
-        const li = document.createElement("li");
+    const dt = data.divisions || data.subdivisions || data.stations || data.feeders || data.layers;
+
+    // console.log('dt: ', dt);
+    
+    
+
+    dt.forEach((item, i) => {
+
+        // console.log('item: ', item);
 
         const label = document.createElement("span");
         label.textContent =
@@ -48,16 +57,55 @@ function buildTree(data, parentElement) {
             item.sub_division_name ||
             item.station_name ||
             item.feeder_name ||
-            item.conductor_name;
+            item.section_id;
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
+        
+        const toggleBtn = document.createElement("button");
+        toggleBtn.classList.add("toggle", "togglebtn", "togglebtn-circles");
+        // toggleBtn.setAttribute("data-endpoint", TargetEndpoint);
+        // toggleBtn.setAttribute("data-id", idValue);
+        toggleBtn.setAttribute("aria-expanded", "false");
+        toggleBtn.textContent = "+";
 
+
+        const li = document.createElement("li");
+        li.classList.add(`parent-li-circle`, `parent-li-circle-${i+1}`);
+        // li.innerHTML = generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId2, nameValue);
+
+        li.appendChild(toggleBtn);
         li.appendChild(checkbox);
         li.appendChild(label);
+        
 
-        parentElement.appendChild(li);
+        const childUL = document.createElement("ul");
+        childUL.classList.add("tree-children");
+        childUL.appendChild(li);
 
+        // console.log("childUL: ", childUL);
+        
+        // parentElement.appendChild(li);
+        parentElement.appendChild(childUL);
+        childUL.style.display = "block";
+
+
+
+        let keyy = "";
+
+        if (item.subdivisions) {
+            keyy = "subdivisions";
+        } else if(item.stations) {
+            keyy = "stations";
+        } else if(item.feeders) {
+            keyy = "feeders";
+        } else if(item.layers) {
+            keyy = "layers";
+        }
+
+        // console.log('key: ', keyy);
+        
+        
         // detect child arrays
         const children =
             item.subdivisions ||
@@ -65,12 +113,15 @@ function buildTree(data, parentElement) {
             item.feeders ||
             item.layers;
 
+        // console.log('children: ', children);
+        
+
         if (children && children.length > 0) {
 
-            const ul = document.createElement("ul");
-            li.appendChild(ul);
+            // const ul = document.createElement("ul");
+            // li.appendChild(ul);
 
-            buildTree(children, ul);
+            buildTree({[keyy]: children}, li);
         }
 
     });
@@ -79,7 +130,7 @@ function buildTree(data, parentElement) {
 // const treeContainer = document.getElementById("tree");
 
 // buildTree(response.divisions, treeContainer);
-
+let circleLayerId = null;
 async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
     const checkbox = e.target;
     const layerId = checkbox.dataset.id || null;
@@ -93,7 +144,7 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         // console.log('container', container);
 
         const childrenBtn = container.querySelectorAll('Button.toggle');
-        console.log('childrenBtn', childrenBtn);
+        // console.log('childrenBtn', childrenBtn);
 
         childrenBtn.forEach(btn => {
             // btn.click();
@@ -115,20 +166,82 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
 
     // if (!checkbox.classList.contains("LayerOnOff") || !layerId) return;
 
+    const circleId = checkbox.classList[0].at(7);
     if (checkbox.checked) {
-        const circleId = checkbox.classList[0].at(7);
-        // console.log(checkbox.classList[0].at(7));
+        
+        // console.log(circleId);
 
         let definExpression = '1=1'; // Default expression to show all features
         if (checkbox.classList.contains("LayerOnOff")) {
+            
             definExpression = `HTSectionLayer_id = ${layerId}`; // Filter features where LayerID matches the checkbox's data-id
+            circleLayerId = layerId;
+            console.log(circleLayerId);
+
         } else if (checkbox.classList.contains("parent-checkbox")) {
+            
             definExpression = `circle_id = ${circleId}`; // Assuming child features have a field like "circle_id" that matches the parent checkbox's data-id
+            circleLayerId = circleId;
+            console.log(circleLayerId);
+            
+            const toggleBtn = checkbox.previousElementSibling; // Assuming the toggle button is immediately before the checkbox
+            const endpoint = toggleBtn.dataset.endpoint;
+            // console.log("endpoint: ", endpoint);
+            const TargetEndpoint = endpointSelection(endpoint);
+            // console.log("TargetEndpoint: ", TargetEndpoint);
+
+            const key = removeLastOccurrence(endpoint, 's');
+
+            let layerId2 = '';
+            let idValue = '';
+            let nameValue = '';
 
             let url = `http://localhost:3000/api/circle-hierarchy/${circleId}`;
             const res = await fetch(url);
             const data = await res.json();
-            console.log(data);
+            // console.log(data);
+
+            // data.forEach(dt => {
+            //     if (endpoint == "HTLayers") {
+            //         layerId2 = dt[`HTSectionLayer_id`];
+            //         nameValue = dt[`section_id`];
+            //         feederID = dt['feeder_id'];
+            //         geom = dt['geom'];
+            //         geomText = dt[`geom_text`];
+            //         colorCode = dt[`color_code`];
+            //         conductorName = dt[`conductor_name`];
+            //     } else {
+            //         idValue = dt[`${key}_id`];
+            //         nameValue = dt[`${key}_name`];
+            //     }
+            // });
+
+            const targetli = checkbox.closest("li");
+            // console.log('targetli: ', targetli);
+
+
+            const uls = targetli.querySelectorAll('UL.tree-children');
+            uls.forEach(ul => {
+                ul.innerHTML = ``; // reset content to avoid duplication on multiple checks
+            });
+            // buildTree(data, targetli, endpoint, TargetEndpoint, idValue, layerId2, nameValue);
+            buildTree(data, targetli);
+
+
+
+            // const childUls = targetli.getElementsByTagName("ul");
+            // console.log('childUls: ', childUls);
+
+            const children = targetli.querySelectorAll('input[type="checkbox"]');
+            // console.log('children', children);
+
+            children.forEach(cb => {
+                cb.checked = checkbox.checked;
+                // console.log('cb', cb);
+                // cb.dispatchEvent(new Event('change')); // Trigger change event for each child checkbox       
+            });
+
+                
 
 
             const childUL = document.createElement("ul");
@@ -137,7 +250,7 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
                 const idValue = dt[`division_id`];
                 const nameValue = dt[`division_name`];
                 const layerId = dt[`HTSectionLayer_id`];  
-                console.log(dt);
+                // console.log(dt);
                   
                 // const newLi = document.createElement("li");
                 // newLi.classList.add(`parent-li-circle parent-li-circle-${id}`);
@@ -149,7 +262,7 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
 
         }
 
-        console.log("Definition Expression: ", definExpression);
+        // console.log("Definition Expression: ", definExpression);
 
         // Create layer with filter based on layerId
         // Assuming your layer has a field that stores the layer ID
@@ -196,7 +309,14 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         //   console.log(`Layer ${layerId} loaded successfully`);
 
         // Store reference
-        activeLayers[layerId] = layer;
+        activeLayers[circleLayerId] = layer;
+
+        console.log("activeLayers: ", activeLayers);    
+        
+
+        // if (definExpression === '1=1') {
+
+        // }
 
         // Add to map
         map.add(layer);
@@ -227,6 +347,30 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         //  console.log(layer);
         //  console.log("layerId: ", layerId);
         //  console.log(geom);  
+
+    } else if (!checkbox.checked){
+
+        let id = '';
+        if (checkbox.classList.contains("LayerOnOff")) {
+            id = layerId;
+            // id = checkbox.dataset.id;
+        } else if (checkbox.classList.contains("parent-checkbox")) {
+            id = checkbox.classList[0].at(7);
+        }
+
+        console.log("id for removal: ", id);
+        
+        // Remove layer using stored reference
+        if (activeLayers[id]) {
+            map.remove(activeLayers[id]);
+            delete activeLayers[id]; // Clean up reference
+            console.log(`Layer ${id} removed from map`);
+        }
+        // map.remove(layer);
+        console.log('Checkbox is unchecked');
+        console.log("activeLayers: ", activeLayers); 
+
+
 
     } else if (layerId) {
         // Remove layer using stored reference
@@ -323,6 +467,7 @@ async function handleExpandButtonClick(e) {
     const expanded = toggleBtn.getAttribute("aria-expanded") === "true";
 
     // Collapse
+    const childULs = li.querySelectorAll("ul");
     if (expanded) {
         if (toggleBtn.classList.contains("togglebtn-circles")) {
             cirlce_checkbox.style.display = 'none';
@@ -330,10 +475,20 @@ async function handleExpandButtonClick(e) {
 
         toggleBtn.textContent = "+";
         toggleBtn.setAttribute("aria-expanded", "false");
-
-        const childUL = li.querySelector("ul");
-        if (childUL) childUL.style.display = "none";
+        
+        if (childULs) {
+            childULs.forEach(ul => {
+                ul.style.display = "none";
+            });
+        }
         return;
+    }  else {
+        if (childULs) {
+            childULs.forEach(ul => {
+                ul.style.display = "block";
+            });
+        }
+        // return;
     }
 
     // Expand
