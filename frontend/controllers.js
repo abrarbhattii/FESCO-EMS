@@ -85,8 +85,7 @@ function buildTree(data, parentElement) {
 
         // console.log("childUL: ", childUL);
         
-        // parentElement.appendChild(li);
-        parentElement.appendChild(childUL);
+        // parentElement.appendChild(childUL);
         childUL.style.display = "block";
 
 
@@ -117,9 +116,6 @@ function buildTree(data, parentElement) {
         
 
         if (children && children.length > 0) {
-
-            // const ul = document.createElement("ul");
-            // li.appendChild(ul);
 
             buildTree({[keyy]: children}, li);
         }
@@ -176,30 +172,37 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
             
             definExpression = `HTSectionLayer_id = ${layerId}`; // Filter features where LayerID matches the checkbox's data-id
             circleLayerId = layerId;
-            console.log(circleLayerId);
+            console.log("layerId: ", circleLayerId);
 
         } else if (checkbox.classList.contains("parent-checkbox")) {
             
             definExpression = `circle_id = ${circleId}`; // Assuming child features have a field like "circle_id" that matches the parent checkbox's data-id
             circleLayerId = circleId;
-            console.log(circleLayerId);
+            console.log("circleId: ", circleLayerId);
             
-            const toggleBtn = checkbox.previousElementSibling; // Assuming the toggle button is immediately before the checkbox
-            const endpoint = toggleBtn.dataset.endpoint;
-            // console.log("endpoint: ", endpoint);
-            const TargetEndpoint = endpointSelection(endpoint);
-            // console.log("TargetEndpoint: ", TargetEndpoint);
 
-            const key = removeLastOccurrence(endpoint, 's');
+            // const toggleBtn = checkbox.previousElementSibling; // Assuming the toggle button is immediately before the checkbox
+            // // console.log("toggleBtn: ", toggleBtn);
+            
+            // const endpoint = toggleBtn.dataset.endpoint;
+            // // console.log("endpoint: ", endpoint);
 
-            let layerId2 = '';
-            let idValue = '';
-            let nameValue = '';
+            // const TargetEndpoint = endpointSelection(endpoint);
+            // // console.log("TargetEndpoint: ", TargetEndpoint);
 
-            let url = `http://localhost:3000/api/circle-hierarchy/${circleId}`;
-            const res = await fetch(url);
-            const data = await res.json();
+            // const key = removeLastOccurrence(endpoint, 's');
+            // // console.log("key: ", key);
+
+
+            // let url = `http://localhost:3000/api/circle-hierarchy/${circleId}`;
+            // const res = await fetch(url);
+            // const data = await res.json();
             // console.log(data);
+
+
+            // let layerId2 = '';
+            // let idValue = '';
+            // let nameValue = '';
 
             // data.forEach(dt => {
             //     if (endpoint == "HTLayers") {
@@ -216,50 +219,45 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
             //     }
             // });
 
-            const targetli = checkbox.closest("li");
+
+            // const targetli = checkbox.closest("li");
             // console.log('targetli: ', targetli);
-
-
-            const uls = targetli.querySelectorAll('UL.tree-children');
-            uls.forEach(ul => {
-                ul.innerHTML = ``; // reset content to avoid duplication on multiple checks
-            });
-            // buildTree(data, targetli, endpoint, TargetEndpoint, idValue, layerId2, nameValue);
-            buildTree(data, targetli);
-
+            // const uls = targetli.querySelectorAll('UL.tree-children');
+            // uls.forEach(ul => {
+            //     // ul.innerHTML = ``; // reset content to avoid duplication on multiple checks
+            // });
+            // // buildTree(data, targetli, endpoint, TargetEndpoint, idValue, layerId2, nameValue);
+            // buildTree(data, targetli);
 
 
             // const childUls = targetli.getElementsByTagName("ul");
             // console.log('childUls: ', childUls);
 
-            const children = targetli.querySelectorAll('input[type="checkbox"]');
-            // console.log('children', children);
+            // const children = targetli.querySelectorAll('input[type="checkbox"]');
+            // // console.log('children', children);
 
-            children.forEach(cb => {
-                cb.checked = checkbox.checked;
-                // console.log('cb', cb);
-                // cb.dispatchEvent(new Event('change')); // Trigger change event for each child checkbox       
-            });
-
-                
+            // children.forEach(cb => {
+            //     cb.checked = checkbox.checked;
+            //     // console.log('cb', cb);
+            //     // cb.dispatchEvent(new Event('change')); // Trigger change event for each child checkbox       
+            // });
 
 
-            const childUL = document.createElement("ul");
-            childUL.classList.add("tree-children");
-            data.divisions.forEach(dt => {
-                const idValue = dt[`division_id`];
-                const nameValue = dt[`division_name`];
-                const layerId = dt[`HTSectionLayer_id`];  
-                // console.log(dt);
+            // const childUL = document.createElement("ul");
+            // childUL.classList.add("tree-children");
+            // data.divisions.forEach(dt => {
+            //     const idValue = dt[`division_id`];
+            //     const nameValue = dt[`division_name`];
+            //     const layerId = dt[`HTSectionLayer_id`];  
+            //     // console.log(dt);
                   
-                // const newLi = document.createElement("li");
-                // newLi.classList.add(`parent-li-circle parent-li-circle-${id}`);
-                // newLi.innerHTML = generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId, nameValue);
-                // childUL.appendChild(newLi);
-            });
-            // li.appendChild(childUL);
-            childUL.style.display = "block";
-
+            //     // const newLi = document.createElement("li");
+            //     // newLi.classList.add(`parent-li-circle parent-li-circle-${id}`);
+            //     // newLi.innerHTML = generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId, nameValue);
+            //     // childUL.appendChild(newLi);
+            // });
+            // // li.appendChild(childUL);
+            // childUL.style.display = "block";
         }
 
         // console.log("Definition Expression: ", definExpression);
@@ -300,8 +298,7 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
             }
 
         });
-
-        //   console.log(layer);
+        //  console.log(layer);
 
 
         // Wait for layer to load before adding
@@ -309,14 +306,15 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         //   console.log(`Layer ${layerId} loaded successfully`);
 
         // Store reference
-        activeLayers[circleLayerId] = layer;
+        // activeLayers[circleLayerId] = layer;
+        if (checkbox.classList.contains("LayerOnOff")) {
+            activeLayers[`l${circleLayerId}`] = layer;
+        } else if (checkbox.classList.contains("parent-checkbox")) {
+            activeLayers[`c${circleLayerId}`] = layer;
+        }
 
         console.log("activeLayers: ", activeLayers);    
-        
 
-        // if (definExpression === '1=1') {
-
-        // }
 
         // Add to map
         map.add(layer);
@@ -352,48 +350,22 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
 
         let id = '';
         if (checkbox.classList.contains("LayerOnOff")) {
-            id = layerId;
+            id = `l${layerId}`;
             // id = checkbox.dataset.id;
+            console.log(`id for removal: ${id}`);
         } else if (checkbox.classList.contains("parent-checkbox")) {
-            id = checkbox.classList[0].at(7);
+            id = `c${checkbox.classList[0].at(7)}`;
+            console.log(`id for removal: ${id}`);
         }
-
-        console.log("id for removal: ", id);
         
         // Remove layer using stored reference
         if (activeLayers[id]) {
-            map.remove(activeLayers[id]);
-            delete activeLayers[id]; // Clean up reference
+            map.remove(activeLayers[`${id}`]);
+            delete activeLayers[`${id}`]; // Clean up reference
             console.log(`Layer ${id} removed from map`);
         }
-        // map.remove(layer);
-        console.log('Checkbox is unchecked');
         console.log("activeLayers: ", activeLayers); 
-
-
-
-    } else if (layerId) {
-        // Remove layer using stored reference
-        if (activeLayers[layerId]) {
-            map.remove(activeLayers[layerId]);
-            delete activeLayers[layerId]; // Clean up reference
-            console.log(`Layer ${layerId} removed from map`);
-        }
-
-        // map.remove(layer);
-        console.log('Checkbox is unchecked');
-    } else if (checkbox.classList.contains("parent-checkbox")) {
-        // Handle parent checkbox uncheck - remove all child layers
-        const container = checkbox.closest('.parent-li-circle');
-        const children = container.querySelectorAll('input[type="checkbox"]');
-        children.forEach(cb => {
-            const childLayerId = cb.dataset.id;
-            if (activeLayers[childLayerId]) {
-                map.remove(activeLayers[childLayerId]);
-                delete activeLayers[childLayerId];
-            }
-        });
-    }
+    } 
 }
 
 
@@ -449,8 +421,11 @@ function generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId, nameValue
 async function handleExpandButtonClick(e) {
 
     const toggleBtn = e.target;
+    // console.log("toggleBtn: ", toggleBtn);
     const id = toggleBtn.dataset.id;
-    const cirlce_checkbox = document.querySelector(`.circle-${id}`);
+    // console.log("id: ", id);
+    const cirlce_checkbox = document.querySelector(`.circle-${id }`);
+    // console.log("cirlce_checkbox: ", cirlce_checkbox);
 
     if (!toggleBtn.classList.contains("togglebtn")) return;
 
@@ -550,6 +525,7 @@ async function handleExpandButtonClick(e) {
                 conductorName = dt[`conductor_name`];
             } else {
                 idValue = dt[`${key}_id`];
+                // console.log("idValue: ", idValue);
                 nameValue = dt[`${key}_name`];
             }
 
@@ -568,6 +544,24 @@ async function handleExpandButtonClick(e) {
 
     } catch (err) {
         console.error("Error loading data:", err);
+    }
+
+    const target = e.target;
+    // console.log("target: ", target);
+    // const checkboxTarget = target.closest('inputinput[type="checkbox"]');
+    const checkboxTarget = target.nextElementSibling;
+    // console.log("checkboxTarget: ", checkboxTarget);
+    if (checkboxTarget?.checked) {
+        // console.log("checkboxTarget: ", checkboxTarget);
+        const li = checkboxTarget.closest('li');
+        // console.log("li: ", li);
+        const childCheckboxes = checkboxTarget.closest('li').querySelectorAll('input[type="checkbox"]');
+        // console.log("childCheckboxes: ", childCheckboxes);
+    
+        childCheckboxes.forEach(cb => {
+            cb.checked = checkboxTarget.checked;  
+            cb.dispatchEvent(new Event('change')); // Trigger change event for each child checkbox
+        });
     }
 }
 
