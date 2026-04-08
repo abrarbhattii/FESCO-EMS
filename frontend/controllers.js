@@ -153,7 +153,7 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         // console.log('children', children);
 
         children.forEach(cb => {
-            cb.checked = checkbox.checked;
+            // cb.checked = checkbox.checked;
             // console.log('cb', cb);
             // cb.dispatchEvent(new Event('change')); // Trigger change event for each child checkbox       
         });
@@ -167,18 +167,22 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         
         // console.log(circleId);
 
+        let idStarting = '';
+
         let definExpression = '1=1'; // Default expression to show all features
         if (checkbox.classList.contains("LayerOnOff")) {
             
             definExpression = `HTSectionLayer_id = ${layerId}`; // Filter features where LayerID matches the checkbox's data-id
             circleLayerId = layerId;
             console.log("layerId: ", circleLayerId);
+            idStarting = 'l';
 
         } else if (checkbox.classList.contains("parent-checkbox")) {
             
             definExpression = `circle_id = ${circleId}`; // Assuming child features have a field like "circle_id" that matches the parent checkbox's data-id
             circleLayerId = circleId;
             console.log("circleId: ", circleLayerId);
+            idStarting = 'c';
             
 
             // const toggleBtn = checkbox.previousElementSibling; // Assuming the toggle button is immediately before the checkbox
@@ -258,6 +262,40 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
             // });
             // // li.appendChild(childUL);
             // childUL.style.display = "block";
+
+        } else if (checkbox.classList.contains("feeders")) {
+            
+            const feederId = checkbox.dataset.id;
+            // console.log("feeder_id: ", feederId);
+            definExpression = `feeder_id = ${feederId}`;
+            circleLayerId = feederId;
+            console.log("feeder_id: ", circleLayerId);
+            idStarting = 'f';
+
+        } else if (checkbox.classList.contains("stations")) {
+
+            const stationId = checkbox.dataset.id;
+            definExpression = `station_id = ${stationId}`;
+            circleLayerId = stationId;
+            console.log("station_id: ", circleLayerId);
+            idStarting = 's';
+
+        } else if (checkbox.classList.contains("sub_divisions")) {
+
+            const sub_divisionId = checkbox.dataset.id;
+            definExpression = `sub_division_id = ${sub_divisionId}`;
+            circleLayerId = sub_divisionId;
+            console.log("sub_division_id: ", circleLayerId);
+            idStarting = 'sd';
+
+        } else if (checkbox.classList.contains("divisions")) {
+
+            const divisionId = checkbox.dataset.id;
+            definExpression = `division_id = ${divisionId}`;
+            circleLayerId = divisionId;
+            console.log("division_id: ", circleLayerId);
+            idStarting = 'd';
+
         }
 
         // console.log("Definition Expression: ", definExpression);
@@ -267,6 +305,8 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         // Common field names: "LayerID", "LAYER_ID", "Category", "Type", etc.
         const layer = new FeatureLayer({
             url: serviceUrl,
+            id: `${idStarting}${circleLayerId}`, // Unique ID for reference
+            customId: `${idStarting}${circleLayerId}`, // Custom property for easier reference
 
             // // Common problematic fields:
             // // Blob, Raster, Geometry, XML, Object
@@ -308,9 +348,17 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         // Store reference
         // activeLayers[circleLayerId] = layer;
         if (checkbox.classList.contains("LayerOnOff")) {
-            activeLayers[`l${circleLayerId}`] = layer;
+            activeLayers[`${idStarting}${circleLayerId}`] = layer;
         } else if (checkbox.classList.contains("parent-checkbox")) {
-            activeLayers[`c${circleLayerId}`] = layer;
+            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+        } else if (checkbox.classList.contains("feeders")) {
+            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+        } else if (checkbox.classList.contains("stations")) {
+            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+        } else if (checkbox.classList.contains("sub_divisions")) {
+            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+        } else if (checkbox.classList.contains("divisions")) {
+            activeLayers[`${idStarting}${circleLayerId}`] = layer;
         }
 
         console.log("activeLayers: ", activeLayers);    
@@ -318,11 +366,10 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
 
         // Add to map
         map.add(layer);
-
-        //  console.log(`Layer ${layerId} added to map`);
-
+        
         //  console.log(`Layer ${layerId} added with filter: LayerID = '${layerId}'`);
         //  console.log("Feature count:", layer.sourceJSON?.features?.length || "Loading...");
+
 
         //  Optional: Zoom to layer extent when added
         //  console.log(await layer.queryExtent());
@@ -346,6 +393,27 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         //  console.log("layerId: ", layerId);
         //  console.log(geom);  
 
+
+        // const target = e.target;
+        // // console.log("target: ", target);
+        // // const checkboxTarget = target.closest('inputinput[type="checkbox"]');
+        // // const checkboxTarget = target.nextElementSibling;
+        // // console.log("checkboxTarget: ", checkboxTarget);
+        // if (target?.checked) {
+        //     // console.log("checkboxTarget: ", checkboxTarget);
+        //     const li = target.closest('li');
+        //     // console.log("li: ", li);
+        //     const childCheckboxes = target.closest('li').querySelectorAll('input[type="checkbox"]');
+        //     // console.log("childCheckboxes: ", childCheckboxes);
+        
+        //     childCheckboxes.forEach(cb => {
+        //         cb.checked = target.checked;  
+        //         // cb.dispatchEvent(new Event('change')); // Trigger change event for each child checkbox
+        //     });
+        // }
+
+
+
     } else if (!checkbox.checked){
 
         let id = '';
@@ -356,20 +424,47 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         } else if (checkbox.classList.contains("parent-checkbox")) {
             id = `c${checkbox.classList[0].at(7)}`;
             console.log(`id for removal: ${id}`);
+        } else if (checkbox.classList.contains("feeders")) {
+            id = `f${checkbox.dataset.id}`;
+            console.log(`id for removal: ${id}`);
+        } else if (checkbox.classList.contains("stations")) {
+            id = `s${checkbox.dataset.id}`;
+            console.log(`id for removal: ${id}`);
+        } else if (checkbox.classList.contains("sub_divisions")) {
+            id = `sd${checkbox.dataset.id}`;
+            console.log(`id for removal: ${id}`);
+        } else if (checkbox.classList.contains("divisions")) {
+            id = `d${checkbox.dataset.id}`;
+            console.log(`id for removal: ${id}`);
         }
         
         // Remove layer using stored reference
         if (activeLayers[id]) {
-            map.remove(activeLayers[`${id}`]);
-            delete activeLayers[`${id}`]; // Clean up reference
+            const layersToRemove = map.layers.filter(l => l.customId === id);
+            map.removeMany(layersToRemove);
+            // map.remove(activeLayers[id]);
+            delete activeLayers[id]; // Clean up reference
             console.log(`Layer ${id} removed from map`);
         }
         console.log("activeLayers: ", activeLayers); 
     } 
+
+    const target = e.target;
+    const li = target.closest('li');
+    // console.log("li: ", li);
+    const childCheckboxes = target.closest('li').querySelectorAll('input[type="checkbox"]');
+    // console.log("childCheckboxes: ", childCheckboxes);
+    childCheckboxes.forEach(cb => {
+        cb.checked = target.checked;  
+        cb.dispatchEvent(new Event('change')); // Trigger change event for each child checkbox
+    });
+
 }
 
 
 function generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId, nameValue) {
+
+    console.log("endpoint: ", endpoint);
 
     let newLiHTML = '';
 
@@ -408,8 +503,8 @@ function generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId, nameValue
             >+</button>
             <input 
                 type="checkbox" 
-                class=""
-                data-id="${layerId}"
+                class="${endpoint} ${endpoint}-${idValue}-checkbox"
+                data-id="${idValue}"
             >
             <span class="node-label">${nameValue}</span>
         `;

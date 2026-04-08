@@ -29,7 +29,8 @@ body {
 .sidebar.open {
   grid-template-columns: 56px 1fr;
   width: 320px;
-  min-width: 300px;
+  /* min-width: 300px; */
+  min-width: max-content;
 }
 .content-area {
   flex: 1;
