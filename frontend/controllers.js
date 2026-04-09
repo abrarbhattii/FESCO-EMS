@@ -168,6 +168,9 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         // console.log(circleId);
 
         let idStarting = '';
+        const name = checkbox.dataset.name;
+        let nameValue = name.replace(/\s+/g, "_");
+        console.log("nameValue: ", nameValue);
 
         let definExpression = '1=1'; // Default expression to show all features
         if (checkbox.classList.contains("LayerOnOff")) {
@@ -296,6 +299,14 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
             console.log("division_id: ", circleLayerId);
             idStarting = 'd';
 
+        } else if (checkbox.classList.contains("node-check")) {
+
+            definExpression = `1=1`;
+            circleLayerId = '';
+            // console.log("layerId: ", circleLayerId);
+            idStarting = 'disco';
+            nameValue = 'disco';
+
         }
 
         // console.log("Definition Expression: ", definExpression);
@@ -306,7 +317,7 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
         const layer = new FeatureLayer({
             url: serviceUrl,
             id: `${idStarting}${circleLayerId}`, // Unique ID for reference
-            customId: `${idStarting}${circleLayerId}`, // Custom property for easier reference
+            customId: `${idStarting}${circleLayerId}-${nameValue}`, // Custom property for easier reference
 
             // // Common problematic fields:
             // // Blob, Raster, Geometry, XML, Object
@@ -342,23 +353,25 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
 
 
         // Wait for layer to load before adding
-        await layer.load();
+        // await layer.load();
         //   console.log(`Layer ${layerId} loaded successfully`);
 
         // Store reference
         // activeLayers[circleLayerId] = layer;
         if (checkbox.classList.contains("LayerOnOff")) {
-            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+            activeLayers[`${idStarting}${circleLayerId}-${nameValue}`] = layer;
         } else if (checkbox.classList.contains("parent-checkbox")) {
-            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+            activeLayers[`${idStarting}${circleLayerId}-${nameValue}`] = layer;
         } else if (checkbox.classList.contains("feeders")) {
-            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+            activeLayers[`${idStarting}${circleLayerId}-${nameValue}`] = layer;
         } else if (checkbox.classList.contains("stations")) {
-            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+            activeLayers[`${idStarting}${circleLayerId}-${nameValue}`] = layer;
         } else if (checkbox.classList.contains("sub_divisions")) {
-            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+            activeLayers[`${idStarting}${circleLayerId}-${nameValue}`] = layer;
         } else if (checkbox.classList.contains("divisions")) {
-            activeLayers[`${idStarting}${circleLayerId}`] = layer;
+            activeLayers[`${idStarting}${circleLayerId}-${nameValue}`] = layer;
+        } else if (checkbox.classList.contains("node-check")) {
+            activeLayers[`disco-disco`] = layer;
         }
 
         console.log("activeLayers: ", activeLayers);    
@@ -416,25 +429,31 @@ async function handleCheckboxChange(e, FeatureLayer, activeLayers, map, view) {
 
     } else if (!checkbox.checked){
 
+        const name = checkbox.dataset.name;
+        const nameValue = name.replace(/\s+/g, "_");
+
         let id = '';
         if (checkbox.classList.contains("LayerOnOff")) {
-            id = `l${layerId}`;
+            id = `l${layerId}-${nameValue}`;
             // id = checkbox.dataset.id;
             console.log(`id for removal: ${id}`);
         } else if (checkbox.classList.contains("parent-checkbox")) {
-            id = `c${checkbox.classList[0].at(7)}`;
+            id = `c${checkbox.classList[0].at(7)}-${nameValue}`;
             console.log(`id for removal: ${id}`);
         } else if (checkbox.classList.contains("feeders")) {
-            id = `f${checkbox.dataset.id}`;
+            id = `f${checkbox.dataset.id}-${nameValue}`;
             console.log(`id for removal: ${id}`);
         } else if (checkbox.classList.contains("stations")) {
-            id = `s${checkbox.dataset.id}`;
+            id = `s${checkbox.dataset.id}-${nameValue}`;
             console.log(`id for removal: ${id}`);
         } else if (checkbox.classList.contains("sub_divisions")) {
-            id = `sd${checkbox.dataset.id}`;
+            id = `sd${checkbox.dataset.id}-${nameValue}`;
             console.log(`id for removal: ${id}`);
         } else if (checkbox.classList.contains("divisions")) {
-            id = `d${checkbox.dataset.id}`;
+            id = `d${checkbox.dataset.id}-${nameValue}`;
+            console.log(`id for removal: ${id}`);
+        } else if (checkbox.classList.contains("node-check")) {
+            id = `disco-disco`;
             console.log(`id for removal: ${id}`);
         }
         
@@ -479,6 +498,7 @@ function generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId, nameValue
             <input 
                 type="checkbox" 
                 class="circle-${idValue} circle parent-checkbox"
+                data-name="${nameValue}"
                 data-id="${layerId}"
                 style="Display: none;"
             >
@@ -490,6 +510,7 @@ function generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId, nameValue
                 type="checkbox" 
                 class="LayerOnOff"
                 data-id="${layerId}"
+                data-name="${nameValue}"
             >
             <span class="node-label">${nameValue}</span>
         `;
@@ -504,6 +525,7 @@ function generateNewLiHTML(endpoint, TargetEndpoint, idValue, layerId, nameValue
             <input 
                 type="checkbox" 
                 class="${endpoint} ${endpoint}-${idValue}-checkbox"
+                data-name="${nameValue}"
                 data-id="${idValue}"
             >
             <span class="node-label">${nameValue}</span>
