@@ -603,7 +603,6 @@ async function handleExpandButtonClick(e) {
 
         const parentId = toggleBtn.dataset.id || null;
 
-        
         let url = `http://localhost:3000/api/${endpoint}`;
         if (parentId) {
             url += `/${parentId}`;
